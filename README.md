@@ -109,8 +109,8 @@ To use **MySQL 8**, set `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABAS
 |---|---|---|
 | Administrator | `admin@cargotrace.com` | `/admin` |
 | Logistics Operator | `operator@cargotrace.com` | `/operator` |
-| Shipper (customer) | `customer@cargotrace.com` | `/shipper` |
-| Buyer (customer) | `buyer@cargotrace.com` | `/buyer` |
+| Shipper (Pengirim) | `shipper@cargotrace.com` *(or `shipper@gmail.com`)* | `/shipper` |
+| Buyer (Penerima) | `buyer@cargotrace.com` *(or `buyer@gmail.com`)* | `/buyer` |
 
 ### Seeded Master Data & Scenarios (`DatabaseSeeder`)
 

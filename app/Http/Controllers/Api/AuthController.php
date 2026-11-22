@@ -27,6 +27,21 @@ class AuthController extends BaseApiController
         }
 
         $credentials = $validator->validated();
+        $normalizedEmail = strtolower(trim($credentials['email']));
+
+        // Map convenient login aliases to primary seeded account emails (supports @gmail.com and @cargotrace.com)
+        $aliasMap = [
+            'shipper@gmail.com' => 'shipper@cargotrace.com',
+            'customer@gmail.com' => 'shipper@cargotrace.com',
+            'customer@cargotrace.com' => 'shipper@cargotrace.com',
+            'buyer@gmail.com' => 'buyer@cargotrace.com',
+            'operator@gmail.com' => 'operator@cargotrace.com',
+            'admin@gmail.com' => 'admin@cargotrace.com',
+        ];
+
+        if (isset($aliasMap[$normalizedEmail])) {
+            $credentials['email'] = $aliasMap[$normalizedEmail];
+        }
 
         if (!Auth::attempt($credentials, true)) {
             return $this->sendError('Invalid email or password.', null, 401);

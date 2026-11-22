@@ -47,10 +47,30 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 1c. Shipper (Pengirim Kargo)
         $customer = User::firstOrCreate(
+            ['email' => 'shipper@cargotrace.com'],
+            [
+                'name' => 'PT Samudera Kopi Nusantara (Shipper)',
+                'password' => Hash::make('password'),
+                'role' => 'customer',
+            ]
+        );
+
+        // Alias akun Shipper untuk kemudahan login demo
+        User::firstOrCreate(
+            ['email' => 'shipper@gmail.com'],
+            [
+                'name' => 'PT Samudera Kopi Nusantara (Shipper)',
+                'password' => Hash::make('password'),
+                'role' => 'customer',
+            ]
+        );
+
+        User::firstOrCreate(
             ['email' => 'customer@cargotrace.com'],
             [
-                'name' => 'PT Samudera Kopi Nusantara',
+                'name' => 'PT Samudera Kopi Nusantara (Shipper)',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
             ]
@@ -65,6 +85,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 1d. Buyer (Penerima Kargo & Escrow Funder)
         $buyer = User::firstOrCreate(
             ['email' => 'buyer@cargotrace.com'],
             [
@@ -77,6 +98,17 @@ class DatabaseSeeder extends Seeder
         if ((float) $buyer->wallet_balance_usd <= 0) {
             $buyer->update(['wallet_balance_usd' => 500000.00]);
         }
+
+        // Alias akun Buyer untuk kemudahan login demo
+        User::firstOrCreate(
+            ['email' => 'buyer@gmail.com'],
+            [
+                'name' => 'Global Specialty Coffee Buyer & Consignee',
+                'password' => Hash::make('password'),
+                'role' => 'customer',
+                'wallet_balance_usd' => 500000.00,
+            ]
+        );
 
         $buyerRotterdam = User::firstOrCreate(
             ['email' => 'buyer.rotterdam@cargotrace.com'],
