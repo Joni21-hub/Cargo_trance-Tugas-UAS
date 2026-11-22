@@ -1,0 +1,1601 @@
+/* ==========================================================================
+   MERIDIAN — Cosmic Glassmorphism & Unified 3D Earth Observatory
+   Enterprise Typography · Translucent Glass Frames · Deep Space Cosmos · Zero Icon Bloat
+   ========================================================================== */
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Cosmic Observatory Palette */
+  --space-deep: #020611;
+  --space-mid: #050f22;
+  --space-glow: #0b2246;
+
+  /* Translucent Frosted Glass Surfaces */
+  --glass-bg: rgba(7, 16, 32, 0.64);
+  --glass-bg-strong: rgba(6, 14, 28, 0.80);
+  --glass-bg-card: rgba(15, 28, 52, 0.54);
+  --glass-border: rgba(148, 163, 184, 0.20);
+  --glass-border-hover: rgba(186, 230, 253, 0.36);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 22px 60px rgba(0, 0, 0, 0.56);
+
+  /* Crisp Luminous Typography */
+  --ink-bright: #f8fafc;
+  --ink-body: #cbd5e1;
+  --ink-muted: #94a3b8;
+  --ink-faint: #64748b;
+
+  /* Brand & Role Semantic Accents */
+  --accent-sky: #38bdf8;
+  --accent-blue: #0284c7;
+  --accent-ok: #34d399;
+  --accent-warn: #fbbf24;
+  --accent-danger: #f87171;
+  --accent-admin: #a5b4fc;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --ease-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at 50% 48%, #0a1f3f 0%, #040b18 55%, #02050e 100%);
+  color: var(--ink-bright);
+  font-size: 13.5px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Full-screen Animated Deep Space Starfield */
+#cosmic-starfield {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Custom Scrollbars inside Glass Panels */
+.glass-scroll::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.glass-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.glass-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+}
+.glass-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.42);
+}
+
+/* ==========================================================================
+   MERIDIAN CUSTOM MINIMAL LOGO LOCKUP
+   ========================================================================== */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.brand-wordmark {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 15px;
+  background: rgba(148, 163, 184, 0.28);
+}
+
+.brand-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   GLASS PRIMITIVES & BUTTONS
+   ========================================================================== */
+.glass-surface {
+  background: var(--glass-bg);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 9px 15px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.16s ease;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #f8fafc;
+  color: #050f22;
+  border-color: #f8fafc;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btn-accent {
+  background: var(--accent-blue);
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+.btn-accent:hover:not(:disabled) {
+  background: #0369a1;
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-bright);
+  border-color: rgba(148, 163, 184, 0.24);
+}
+.btn-glass:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(186, 230, 253, 0.42);
+}
+
+.btn-ok {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.4);
+}
+.btn-ok:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.3);
+  color: #ffffff;
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.36);
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.26);
+  color: #ffffff;
+}
+
+.btn-sm {
+  font-size: 11.5px;
+  padding: 6px 11px;
+}
+
+.btn-lg {
+  font-size: 13.5px;
+  padding: 12px 20px;
+}
+
+/* Status Dots & Pills (Zero Emojis) */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-created,
+.status-booked,
+.status-picked_up {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fcd34d;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+.status-created::before,
+.status-booked::before,
+.status-picked_up::before { background: #fbbf24; }
+
+.status-confirmed,
+.status-in_transit {
+  background: rgba(56, 189, 248, 0.14);
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.32);
+}
+.status-confirmed::before,
+.status-in_transit::before { background: #38bdf8; }
+
+.status-delivered {
+  background: rgba(16, 185, 129, 0.14);
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.32);
+}
+.status-delivered::before { background: #34d399; }
+
+.status-delayed,
+.status-cancelled {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+.status-delayed::before,
+.status-cancelled::before { background: #f87171; }
+
+.tag-mono {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-body);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* ==========================================================================
+   GLASS FORM CONTROLS
+   ========================================================================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ink-body);
+}
+
+.field label .req {
+  color: var(--accent-danger);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-bright);
+  background: rgba(3, 9, 20, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.select option {
+  background: #071224;
+  color: #f8fafc;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--accent-sky);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* ==========================================================================
+   PAGE 1: COSMIC HOME PAGE (PUBLIC LANDING & LIVE TRACKING)
+   ========================================================================== */
+#page-home {
+  position: relative;
+  z-index: 2;
+}
+
+.pub-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(3, 9, 20, 0.72);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.pub-nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.pub-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.pub-nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.pub-nav-link:hover {
+  color: #ffffff;
+}
+
+.hero-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 52px 28px 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 44px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-sky);
+  margin-bottom: 16px;
+}
+
+.hero-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-sky);
+  box-shadow: 0 0 10px var(--accent-sky);
+}
+
+.hero-title {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.hero-desc {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  max-width: 520px;
+  margin-bottom: 28px;
+}
+
+.hero-track-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  max-width: 530px;
+}
+
+.hero-track-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-bottom: 9px;
+}
+
+.hero-track-form {
+  display: flex;
+  gap: 8px;
+}
+
+.hero-track-input-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.hero-track-input-wrap svg {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+
+.hero-track-input {
+  width: 100%;
+  background: rgba(2, 6, 17, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 12px 10px 34px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.hero-track-input:focus {
+  border-color: var(--accent-sky);
+}
+
+.hero-metrics-strip {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 530px;
+}
+
+.hero-metric-val {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero-metric-lbl {
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.hero-globe-stage {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: radial-gradient(circle at 50% 50%, rgba(14, 38, 76, 0.45) 0%, rgba(2, 6, 17, 0.25) 72%);
+}
+
+#hero-globe-map {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-globe-caption {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: rgba(203, 213, 225, 0.72);
+  text-transform: uppercase;
+}
+
+.home-band {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 28px 68px;
+}
+
+.band-header {
+  max-width: 620px;
+  margin-bottom: 30px;
+}
+
+.band-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-sky);
+  margin-bottom: 8px;
+}
+
+.band-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.band-desc {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.roles-showcase {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.role-showcase-card {
+  padding: 24px 20px;
+  border-radius: var(--radius-md);
+}
+
+.role-showcase-idx {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-sky);
+  margin-bottom: 12px;
+}
+
+.role-showcase-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.role-showcase-card p {
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+.pub-footer {
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(2, 6, 17, 0.7);
+}
+
+.pub-footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   PAGE 2: COSMIC GLASS LOGIN & REGISTER PAGE
+   ========================================================================== */
+#page-auth {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
+
+.auth-glass-shell {
+  width: 100%;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.auth-left {
+  padding: 36px 40px;
+  background: rgba(7, 16, 32, 0.82);
+}
+
+.auth-right {
+  padding: 36px 38px;
+  background: radial-gradient(circle at 70% 30%, rgba(14, 42, 82, 0.72) 0%, rgba(3, 9, 20, 0.88) 80%);
+  border-left: 1px solid rgba(148, 163, 184, 0.16);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.auth-heading {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 24px;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.auth-sub {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-bottom: 20px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(2, 6, 17, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+}
+
+.auth-tab {
+  border: none;
+  background: transparent;
+  padding: 8px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.auth-tab.active {
+  background: rgba(56, 189, 248, 0.16);
+  color: #ffffff;
+}
+
+.auth-alert {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  margin-bottom: 14px;
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.quick-access-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.quick-role-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.quick-role-btn:hover {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.quick-role-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.quick-role-desc {
+  font-size: 10.5px;
+  color: var(--ink-muted);
+}
+
+/* ==========================================================================
+   PAGE 3: FULL-UNIVERSE COSMIC WORKSPACE (4 DISTINCT ROLE DASHBOARDS)
+   Center: Unified 3D Globe | Left & Right: Translucent Floating Glass Panels
+   ========================================================================== */
+#page-workspace {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Full-Viewport Unified 3D Earth Globe */
+#workspace-globe-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Force MapLibre canvas transparent so cosmic starfield shines behind the 3D Earth */
+.maplibregl-map,
+.maplibregl-canvas-container {
+  background: transparent !important;
+}
+
+.maplibregl-popup-content {
+  background: rgba(6, 15, 30, 0.92) !important;
+  backdrop-filter: blur(16px);
+  color: #f8fafc !important;
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6) !important;
+  font-family: var(--font-sans) !important;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: rgba(6, 15, 30, 0.92) !important;
+  border-bottom-color: rgba(6, 15, 30, 0.92) !important;
+}
+
+.maplibregl-popup-close-button {
+  color: #94a3b8 !important;
+  font-size: 16px !important;
+  padding: 2px 6px !important;
+}
+
+.gl-pop-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent-sky);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  padding-right: 22px;
+}
+
+.gl-pop-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.gl-pop-sub {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.maplibregl-ctrl-group {
+  background: rgba(6, 15, 30, 0.75) !important;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+}
+
+.maplibregl-ctrl-group button {
+  filter: invert(1) brightness(1.4);
+}
+
+/* Floating Glass Top Navigation Bar */
+.ws-topbar {
+  position: fixed;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  height: 54px;
+  z-index: 25;
+  border-radius: 14px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ws-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ws-role-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.ws-role-badge.role-admin {
+  background: rgba(165, 180, 252, 0.16);
+  color: #c7d2fe;
+  border: 1px solid rgba(165, 180, 252, 0.34);
+}
+.ws-role-badge.role-operator {
+  background: rgba(56, 189, 248, 0.16);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+}
+.ws-role-badge.role-shipper {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.34);
+}
+.ws-role-badge.role-buyer {
+  background: rgba(52, 211, 153, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.34);
+}
+.ws-role-badge.role-public {
+  background: rgba(148, 163, 184, 0.16);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.ws-topbar-metrics {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.ws-top-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.ws-top-stat-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ws-top-stat-lbl {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.ws-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ws-user-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-body);
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Floating Left & Right Glass Frame Panels */
+.ws-panel {
+  position: fixed;
+  top: 82px;
+  bottom: 18px;
+  width: 356px;
+  z-index: 20;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.4s var(--ease-expo), opacity 0.3s ease;
+}
+
+.ws-panel-left {
+  left: 16px;
+}
+
+.ws-panel-right {
+  right: 16px;
+}
+
+#workspace-shell.panels-collapsed .ws-panel-left {
+  transform: translateX(-390px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#workspace-shell.panels-collapsed .ws-panel-right {
+  transform: translateX(390px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ergonomic Wide Workstation Layout for Logistics Operators (Desktop >= 1120px) */
+@media (min-width: 1120px) {
+  #workspace-shell.operator-workstation .ws-panel-left {
+    width: min(560px, 42vw);
+  }
+
+  #workspace-shell.operator-workstation .ws-earth-dock {
+    left: calc(50% + 95px);
+  }
+}
+
+/* Floating Utility Drawer (Notifications & Virtual Wallet) */
+.ws-utility-drawer {
+  position: fixed;
+  top: 78px;
+  right: 16px;
+  width: 380px;
+  max-height: calc(100vh - 104px);
+  z-index: 45;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeSlideIn 0.22s var(--ease-expo);
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-dot-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.notif-item {
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(2, 6, 17, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.notif-item.unread {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(14, 42, 78, 0.55);
+}
+
+.escrow-banner {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  margin-bottom: 10px;
+}
+
+.escrow-banner.warn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.escrow-banner.danger {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(248, 113, 113, 0.32);
+}
+
+.dock-attribution {
+  font-size: 10px;
+  color: var(--ink-muted);
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+.panel-head {
+  padding: 15px 18px 13px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.panel-sub {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+/* Glass Segmented Navigation Tabs inside Panels */
+.glass-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(2, 6, 17, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.glass-tab {
+  flex: 1;
+  min-width: 70px;
+  border: none;
+  background: transparent;
+  color: var(--ink-muted);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 7px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.glass-tab.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #ffffff;
+}
+
+/* Shipment Item Card inside Glass Panels */
+.cargo-item-card {
+  padding: 13px 14px;
+  border-radius: var(--radius-md);
+  background: var(--glass-bg-card);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.cargo-item-card:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(15, 34, 64, 0.72);
+}
+
+.cargo-item-card.selected {
+  border-color: var(--accent-sky);
+  background: rgba(14, 42, 78, 0.78);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+}
+
+.cargo-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.cargo-card-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cargo-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.cargo-card-route {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-sky);
+  margin-bottom: 6px;
+}
+
+.cargo-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.cargo-card-actions {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+/* Floating Bottom-Center Earth Controls */
+.ws-earth-dock {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 24;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+}
+
+.dock-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-body);
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.dock-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.dock-btn.active {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #ffffff;
+}
+
+.dock-sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(148, 163, 184, 0.22);
+}
+
+/* Spec Blocks, Timelines & Admin Lists inside Glass Panels */
+.glass-section-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-sky);
+  margin: 14px 0 9px;
+}
+
+.glass-section-lbl:first-child {
+  margin-top: 2px;
+}
+
+.glass-kv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.glass-kv {
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(2, 6, 17, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.glass-k {
+  font-size: 10px;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.glass-v {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+/* Lifecycle Vertical / Compact Strip */
+.lifecycle-pills {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.lc-step {
+  text-align: center;
+  padding: 6px 2px;
+  border-radius: 6px;
+  background: rgba(2, 6, 17, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+.lc-step.done {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.34);
+  color: #6ee7b7;
+}
+
+.lc-step.current {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: var(--accent-sky);
+  color: #ffffff;
+}
+
+/* Chronological Timeline inside Glass Panel */
+.g-timeline {
+  position: relative;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.g-timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 5px;
+  bottom: 5px;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.24);
+}
+
+.g-timeline-item {
+  position: relative;
+}
+
+.g-timeline-dot {
+  position: absolute;
+  left: -16px;
+  top: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #071224;
+  border: 2px solid var(--accent-sky);
+}
+
+.g-timeline-item.is-exc .g-timeline-dot {
+  border-color: var(--accent-danger);
+}
+
+.g-timeline-type {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.g-timeline-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+
+.g-timeline-loc {
+  font-size: 11px;
+  color: var(--accent-sky);
+  margin-top: 1px;
+}
+
+.g-timeline-note {
+  font-size: 11.5px;
+  color: var(--ink-body);
+  margin-top: 2px;
+}
+
+/* Admin Bar Chart Rows */
+.bar-row {
+  margin-bottom: 9px;
+}
+
+.bar-row-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  margin-bottom: 4px;
+  color: var(--ink-body);
+}
+
+.bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+}
+
+/* Search input inside Glass Panel */
+.glass-search {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.glass-search svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+  height: 13px;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+
+.glass-search input {
+  width: 100%;
+  background: rgba(2, 6, 17, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 10px 8px 30px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.glass-search input:focus {
+  border-color: var(--accent-sky);
+}
+
+/* Exception Box */
+.exc-box {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  margin-bottom: 8px;
+}
+
+.exc-box.resolved {
+  background: rgba(2, 6, 17, 0.45);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+/* Empty State inside Glass Panel */
+.glass-empty {
+  padding: 32px 14px;
+  text-align: center;
+  border: 1px dashed rgba(148, 163, 184, 0.2);
+  border-radius: var(--radius-md);
+  background: rgba(2, 6, 17, 0.32);
+}
+
+.glass-empty-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.glass-empty-desc {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast-item {
+  background: rgba(5, 14, 30, 0.92);
+  backdrop-filter: blur(14px);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 12.5px;
+  font-weight: 500;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.toast-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-sky);
+}
+.toast-item.toast-ok .toast-dot { background: var(--accent-ok); }
+.toast-item.toast-err .toast-dot { background: var(--accent-danger); }
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS (ZERO OVERLAP ON LAPTOP / TABLET / MOBILE)
+   ========================================================================== */
+@media (max-width: 1119px) {
+  .ws-topbar-metrics { display: none; }
+  .ws-user-tag { display: none; }
+  .brand-divider { display: none; }
+  .ws-panel {
+    width: min(390px, calc(100vw - 32px));
+    bottom: 68px;
+  }
+  .ws-earth-dock {
+    max-width: calc(100vw - 24px);
+    overflow-x: auto;
+    bottom: 12px;
+    gap: 3px;
+    padding: 5px 8px;
+  }
+  .ws-earth-dock .dock-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .roles-showcase { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 960px) {
+  .hero-section { grid-template-columns: 1fr; padding: 36px 20px; }
+  .hero-globe-stage { height: 360px; }
+  .auth-glass-shell { grid-template-columns: 1fr; }
+  .auth-right { display: none; }
+  .brand-sub, .pub-nav-links { display: none; }
+  .ws-panel-left {
+    width: min(410px, calc(100vw - 32px));
+  }
+  .ws-panel-right {
+    width: min(410px, calc(100vw - 32px));
+    right: 16px;
+    z-index: 28;
+    transform: translateX(calc(100% + 28px));
+    opacity: 0;
+    pointer-events: none;
+  }
+  #workspace-shell.inspector-open .ws-panel-right {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .form-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .ws-topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .brand-wordmark {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+  .ws-role-badge {
+    font-size: 9.5px;
+    padding: 3px 7px;
+  }
+  .roles-showcase { grid-template-columns: 1fr; }
+  .quick-access-grid { grid-template-columns: 1fr; }
+  .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+  .ws-utility-drawer { width: calc(100vw - 24px); right: 12px; }
+}
