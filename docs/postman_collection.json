@@ -1,0 +1,449 @@
+{
+  "info": {
+    "name": "Meridian (CargoTrace) REST API v1",
+    "_postman_id": "8e3b7e20-6c4d-4d89-9a4a-3b6e82c41101",
+    "description": "Postman collection for Meridian (CargoTrace) Global Shipment Visibility & Tracking Platform. Run Login first so Postman stores the Laravel session cookie automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api/v1", "type": "string" },
+    { "key": "tracking_number", "value": "MRD-20261122-0001", "type": "string" },
+    { "key": "shipment_id", "value": "1", "type": "string" },
+    { "key": "exception_id", "value": "1", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & Bootstrap",
+      "item": [
+        {
+          "name": "Login (Operator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"operator@cargotrace.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@cargotrace.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"PT Nusantara Ekspor\",\n  \"email\": \"eksportir@nusantara.id\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": ["{{base_url}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": ["{{base_url}}"],
+              "path": ["user"]
+            }
+          }
+        },
+        {
+          "name": "Bootstrap Metadata & KPIs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/bootstrap",
+              "host": ["{{base_url}}"],
+              "path": ["bootstrap"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Shipments & Lifecycle",
+      "item": [
+        {
+          "name": "List Shipments (Search & Filter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments?per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["shipments"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "status", "value": "IN_TRANSIT", "disabled": true },
+                { "key": "is_delayed", "value": "true", "disabled": true },
+                { "key": "search", "value": "CSQU", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Shipment Detail & Weather",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{tracking_number}}",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{tracking_number}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Shipment (ISO 6346)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tracking_number\": \"MRD-20261122-0001\",\n  \"container_number\": \"CSQU3054383\",\n  \"customer_id\": 3,\n  \"buyer_id\": 5,\n  \"carrier_id\": 1,\n  \"origin_location_id\": 1,\n  \"destination_location_id\": 3,\n  \"cargo_description\": \"Kopi Arabika Gayo Grade 1 (500 karung)\",\n  \"weight_kg\": 18500,\n  \"volume_cbm\": 64,\n  \"expected_departure\": \"2026-11-23 08:00:00\",\n  \"expected_arrival\": \"2026-12-10 18:00:00\",\n  \"notes\": \"Sertifikat phytosanitary terlampir\",\n  \"items\": [\n    {\n      \"item_name\": \"Kopi Arabika Gayo Grade 1\",\n      \"category\": \"Hasil Bumi & Kopi\",\n      \"quantity\": 500,\n      \"weight_kg\": 18500,\n      \"condition\": \"BAIK & SEGEL UTUH\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shipments",
+              "host": ["{{base_url}}"],
+              "path": ["shipments"]
+            }
+          }
+        },
+        {
+          "name": "Update Shipment (Operator/Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Dokumen ekspor terverifikasi oleh operator pelabuhan.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Confirm by Shipper",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/confirm-shipper",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "confirm-shipper"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Receipt by Buyer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/confirm-buyer",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "confirm-buyer"]
+            }
+          }
+        },
+        {
+          "name": "Delete Shipment (Operator/Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Tracking & Exceptions",
+      "item": [
+        {
+          "name": "Get Shipment Tracking History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/tracking",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "tracking"]
+            }
+          }
+        },
+        {
+          "name": "Add Tracking Checkpoint (Operator/Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_id\": 2,\n  \"event_type\": \"IN_TRANSIT_CHECKPOINT\",\n  \"remarks\": \"Kapal transit di Port of Singapore untuk pengisian bahan bakar.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/tracking",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "tracking"]
+            }
+          }
+        },
+        {
+          "name": "List Shipment Exceptions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/exceptions",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "exceptions"]
+            }
+          }
+        },
+        {
+          "name": "Record Exception & Recalculate ETA (Operator/Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exception_type\": \"CUSTOMS_HOLD\",\n  \"severity\": \"HIGH\",\n  \"impact_hours\": 24,\n  \"description\": \"Penahanan kontainer oleh otoritas bea cukai untuk pemeriksaan dokumen ekspor.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shipments/{{shipment_id}}/exceptions",
+              "host": ["{{base_url}}"],
+              "path": ["shipments", "{{shipment_id}}", "exceptions"]
+            }
+          }
+        },
+        {
+          "name": "Resolve Exception (Operator/Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolution_notes\": \"Dokumen terverifikasi, kontainer melanjutkan pelayaran.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/exceptions/{{exception_id}}/resolve",
+              "host": ["{{base_url}}"],
+              "path": ["exceptions", "{{exception_id}}", "resolve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Master Data, Weather & Audit",
+      "item": [
+        {
+          "name": "List Locations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/locations",
+              "host": ["{{base_url}}"],
+              "path": ["locations"]
+            }
+          }
+        },
+        {
+          "name": "List Active Carriers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/carriers",
+              "host": ["{{base_url}}"],
+              "path": ["carriers"]
+            }
+          }
+        },
+        {
+          "name": "Get Live Port Weather",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/weather?location_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["weather"],
+              "query": [{ "key": "location_id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs (Operator/Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/audit-logs",
+              "host": ["{{base_url}}"],
+              "path": ["audit-logs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Admin Exclusive Management",
+      "item": [
+        {
+          "name": "Admin Executive Overview",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/admin/overview",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "overview"]
+            }
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Operator Baru\",\n  \"email\": \"op.baru@meridian.id\",\n  \"password\": \"password123\",\n  \"role\": \"operator\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Create Carrier",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"ZIMU\",\n  \"name\": \"ZIM Integrated Shipping\",\n  \"transport_mode\": \"SEA\",\n  \"contact_email\": \"ops@zim.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/carriers",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "carriers"]
+            }
+          }
+        },
+        {
+          "name": "Create Location / Port",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"IDSUB\",\n  \"name\": \"Port of Tanjung Perak (Surabaya)\",\n  \"type\": \"PORT\",\n  \"country\": \"Indonesia\",\n  \"latitude\": -7.2047,\n  \"longitude\": 112.7294\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/locations",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "locations"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
