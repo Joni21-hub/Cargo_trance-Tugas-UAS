@@ -41,11 +41,14 @@ class StoreShipmentRequest extends BaseApiRequest
             'expected_departure' => ['required', 'date'],
             'expected_arrival' => ['required', 'date', 'after:expected_departure'],
             'notes' => ['nullable', 'string'],
+            'contract_amount_usd' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
             'items' => ['nullable', 'array'],
             'items.*.item_name' => ['required_with:items', 'string'],
-            'items.*.quantity' => ['nullable', 'integer'],
-            'items.*.weight_kg' => ['nullable', 'numeric'],
-            'items.*.condition' => ['nullable', 'string'],
+            'items.*.category' => ['nullable', 'string', 'max:100'],
+            'items.*.quantity' => ['nullable', 'integer', 'min:1'],
+            'items.*.weight_kg' => ['nullable', 'numeric', 'min:0'],
+            'items.*.condition' => ['nullable', 'string', 'max:120'],
+            'items.*.notes' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

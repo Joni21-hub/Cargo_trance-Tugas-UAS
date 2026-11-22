@@ -17,12 +17,14 @@ class ShipmentException extends Model
         'impact_hours',
         'description',
         'status',
+        'detected_at',
         'resolved_at',
         'resolution_notes',
     ];
 
     protected $casts = [
         'impact_hours' => 'integer',
+        'detected_at' => 'datetime',
         'resolved_at' => 'datetime',
     ];
 

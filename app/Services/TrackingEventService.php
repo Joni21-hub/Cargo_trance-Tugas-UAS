@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AuditLog;
+use App\Models\Location;
 use App\Models\Shipment;
 use App\Models\TrackingEvent;
 use Illuminate\Support\Facades\DB;
@@ -10,18 +11,23 @@ use Illuminate\Support\Facades\DB;
 class TrackingEventService
 {
     public function __construct(
-        protected ShipmentLifecycleService $lifecycleService
+        protected ShipmentLifecycleService $lifecycleService,
+        protected NotificationService $notificationService
     ) {}
 
     /**
-     * Record a new tracking event, sync shipment location & status, and record audit log.
+     * Record a new tracking event, sync shipment location & status, notify parties, and record audit log.
      */
     public function recordEvent(Shipment $shipment, array $data, ?int $userId = null): TrackingEvent
     {
         return DB::transaction(function () use ($shipment, $data, $userId) {
+            $location = Location::find($data['location_id']);
+
             $event = TrackingEvent::create([
                 'shipment_id' => $shipment->id,
                 'location_id' => $data['location_id'],
+                'latitude' => $data['latitude'] ?? $location?->latitude,
+                'longitude' => $data['longitude'] ?? $location?->longitude,
                 'event_type' => $data['event_type'],
                 'event_time' => $data['event_time'] ?? now(),
                 'remarks' => $data['remarks'] ?? null,
@@ -35,9 +41,9 @@ class TrackingEventService
             $shipment->current_location_id = $data['location_id'];
 
             // Automatic status synchronization
-            if ($data['event_type'] === 'DEPARTURE' && $shipment->status === 'PICKED_UP') {
+            if ($data['event_type'] === 'DEPARTURE' && in_array($shipment->status, ['PICKED_UP', 'CONFIRMED', 'BOOKED'])) {
                 $this->lifecycleService->transition($shipment, 'IN_TRANSIT');
-            } elseif ($data['event_type'] === 'DELIVERED' && in_array($shipment->status, ['IN_TRANSIT', 'PICKED_UP'])) {
+            } elseif ($data['event_type'] === 'DELIVERED' && in_array($shipment->status, ['IN_TRANSIT', 'PICKED_UP', 'CONFIRMED'])) {
                 $this->lifecycleService->transition($shipment, 'DELIVERED');
             } else {
                 $shipment->save();
@@ -61,6 +67,14 @@ class TrackingEventService
                 ],
                 'ip_address' => request()->ip() ?? '127.0.0.1',
             ]);
+
+            $locLabel = $location ? "{$location->name} ({$location->code})" : 'Titik Rute';
+            $this->notificationService->notifyParties(
+                $shipment,
+                'TRACKING_UPDATE',
+                "Update {$event->event_type} ({$shipment->tracking_number})",
+                "Kargo tercatat di {$locLabel}. " . ($event->remarks ? $event->remarks : "Status: {$shipment->status}.")
+            );
 
             return $event;
         });

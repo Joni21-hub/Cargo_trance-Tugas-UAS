@@ -85,8 +85,32 @@ class Shipment extends Model
         return $this->hasMany(ShipmentException::class)->orderBy('created_at', 'desc');
     }
 
+    protected $appends = [
+        'delay_severity',
+    ];
+
+    public function getDelaySeverityAttribute(): string
+    {
+        $hours = (int) ($this->delay_hours ?? 0);
+        if ($hours <= 0) {
+            return 'NONE';
+        }
+        if ($hours <= 6) {
+            return 'LOW';
+        }
+        if ($hours <= 24) {
+            return 'MEDIUM';
+        }
+        return 'HIGH';
+    }
+
+    public function escrow()
+    {
+        return $this->hasOne(EscrowTransaction::class);
+    }
+
     public function activeExceptions()
     {
-        return $this->hasMany(ShipmentException::class)->whereIn('status', ['OPEN', 'UNDER_INVESTIGATION']);
+        return $this->hasMany(ShipmentException::class)->whereIn('status', ['OPEN', 'INVESTIGATING', 'UNDER_INVESTIGATION']);
     }
 }

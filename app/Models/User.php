@@ -22,6 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'location_id',
+        'wallet_balance_usd',
     ];
 
     /**
@@ -44,6 +46,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'wallet_balance_usd' => 'float',
         ];
     }
 
@@ -70,5 +73,20 @@ class User extends Authenticatable
     public function shipments()
     {
         return $this->hasMany(Shipment::class, 'customer_id');
+    }
+
+    public function branchLocation()
+    {
+        return $this->belongsTo(Location::class, 'location_id');
+    }
+
+    public function appNotifications()
+    {
+        return $this->hasMany(AppNotification::class, 'user_id')->latest();
+    }
+
+    public function walletMutations()
+    {
+        return $this->hasMany(WalletMutation::class, 'user_id')->latest();
     }
 }

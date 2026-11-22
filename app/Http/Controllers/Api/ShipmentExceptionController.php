@@ -8,6 +8,7 @@ use App\Models\Shipment;
 use App\Models\ShipmentException;
 use App\Services\ExceptionManagementService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ShipmentExceptionController extends BaseApiController
 {
@@ -35,7 +36,6 @@ class ShipmentExceptionController extends BaseApiController
 
     /**
      * POST /api/v1/shipments/{id}/exceptions
-     * Log new delay exception for shipment.
      */
     public function store(StoreShipmentExceptionRequest $request, string $id): JsonResponse
     {
@@ -53,8 +53,32 @@ class ShipmentExceptionController extends BaseApiController
 
         return $this->sendResponse([
             'exception' => $exception,
-            'shipment' => $shipment->fresh(),
+            'shipment' => $shipment->fresh(['escrow']),
         ], 'Exception recorded and ETA recalculated', 201);
+    }
+
+    /**
+     * POST /api/v1/exceptions/{id}/investigate
+     * Transition an OPEN exception into INVESTIGATING status.
+     */
+    public function investigate(Request $request, int $id): JsonResponse
+    {
+        $exception = ShipmentException::find($id);
+        if (!$exception) {
+            return $this->sendError('Exception not found', null, 404);
+        }
+
+        $userId = (int) (auth()->id() ?? 1);
+        $updated = $this->exceptionService->investigateException(
+            $exception,
+            $request->input('notes'),
+            $userId
+        );
+
+        return $this->sendResponse([
+            'exception' => $updated,
+            'shipment' => $updated->shipment->fresh(['escrow']),
+        ], 'Exception status updated to INVESTIGATING');
     }
 
     /**
@@ -74,7 +98,7 @@ class ShipmentExceptionController extends BaseApiController
 
         return $this->sendResponse([
             'exception' => $resolved,
-            'shipment' => $resolved->shipment->fresh(),
+            'shipment' => $resolved->shipment->fresh(['escrow']),
         ], 'Exception resolved and ETA recalculated');
     }
 }

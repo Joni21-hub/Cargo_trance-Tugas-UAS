@@ -71,8 +71,12 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Global Specialty Coffee Buyer & Consignee',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
+                'wallet_balance_usd' => 500000.00,
             ]
         );
+        if ((float) $buyer->wallet_balance_usd <= 0) {
+            $buyer->update(['wallet_balance_usd' => 500000.00]);
+        }
 
         $buyerRotterdam = User::firstOrCreate(
             ['email' => 'buyer.rotterdam@cargotrace.com'],
@@ -113,6 +117,10 @@ class DatabaseSeeder extends Seeder
                 'longitude' => 106.8836000,
             ]
         );
+
+        if (!$operator->location_id) {
+            $operator->update(['location_id' => $priok->id]);
+        }
 
         $singapore = Location::firstOrCreate(
             ['code' => 'SGSIN'],
