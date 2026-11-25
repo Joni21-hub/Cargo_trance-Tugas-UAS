@@ -51,6 +51,10 @@ class DemoTimeTravelController extends BaseApiController
         $oldExpectedArrival = $shipment->expected_arrival?->toDateTimeString();
         $shipment->expected_departure = Carbon::parse($shipment->expected_departure)->subHours($hours);
         $shipment->expected_arrival = Carbon::parse($shipment->expected_arrival)->subHours($hours);
+        $shipment->simulated_days_elapsed = (int) ($shipment->simulated_days_elapsed ?? 0) + max(1, (int) round($hours / 24));
+        if (in_array($shipment->status, ['CONFIRMED', 'BOOKED', 'PICKED_UP'], true)) {
+            $shipment->status = 'IN_TRANSIT';
+        }
         $shipment->save();
 
         // Check if shipment has now passed expected_arrival while still not DELIVERED

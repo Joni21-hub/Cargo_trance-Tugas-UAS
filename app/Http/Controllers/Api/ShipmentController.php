@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StoreShipmentRequest;
 use App\Http\Requests\UpdateShipmentRequest;
 use App\Models\AuditLog;
+use App\Models\Carrier;
+use App\Models\PickupRequest;
 use App\Models\Shipment;
 use App\Models\TrackingEvent;
 use App\Services\EscrowService;
@@ -195,6 +197,14 @@ class ShipmentController extends BaseApiController
             'tracking_number' => $shipment->tracking_number,
             'container_number' => $shipment->container_number,
             'status' => $shipment->status,
+            'transport_mode' => $shipment->transport_mode ?? ($shipment->carrier?->transport_mode ?? 'SEA'),
+            'pickup_address' => $shipment->pickup_address,
+            'pickup_latitude' => $shipment->pickup_latitude,
+            'pickup_longitude' => $shipment->pickup_longitude,
+            'seal_number' => $shipment->seal_number,
+            'verification_checklist' => $shipment->verification_checklist,
+            'travel_progress_pct' => $shipment->travel_progress_pct,
+            'simulated_days_elapsed' => $shipment->simulated_days_elapsed ?? 0,
             'cargo_description' => $shipment->cargo_description,
             'weight_kg' => $shipment->weight_kg,
             'volume_cbm' => $shipment->volume_cbm,
@@ -237,9 +247,28 @@ class ShipmentController extends BaseApiController
 
         $itemsData = $data['items'] ?? null;
         $contractAmountUsd = (float) ($data['contract_amount_usd'] ?? 0);
-        unset($data['items'], $data['contract_amount_usd']);
+        $pickupRequestId = $data['pickup_request_id'] ?? null;
+        unset($data['items'], $data['contract_amount_usd'], $data['pickup_request_id']);
+
+        if (empty($data['transport_mode'])) {
+            $carrier = Carrier::find($data['carrier_id']);
+            $data['transport_mode'] = $carrier?->transport_mode ?: 'SEA';
+        }
+
+        if (!empty($data['verification_checklist']) && is_array($data['verification_checklist'])) {
+            $data['verification_checklist']['verified_by'] = auth()->user()?->name ?? 'Operator Cabang';
+            $data['verification_checklist']['verified_at'] = now()->toDateTimeString();
+        }
 
         $shipment = Shipment::create($data);
+
+        if ($pickupRequestId) {
+            PickupRequest::where('id', $pickupRequestId)->update([
+                'status' => 'CONVERTED_TO_SHIPMENT',
+                'shipment_id' => $shipment->id,
+                'assigned_operator_id' => auth()->id(),
+            ]);
+        }
 
         if (!empty($itemsData) && is_array($itemsData)) {
             foreach ($itemsData as $item) {
@@ -536,6 +565,75 @@ class ShipmentController extends BaseApiController
         return $this->sendResponse(
             $shipment->load(['carrier', 'customer', 'buyer', 'originLocation', 'destinationLocation', 'items', 'escrow']),
             'Penerimaan pesanan berhasil disetujui oleh Buyer. Pengiriman selesai.'
+        );
+    }
+
+    /**
+     * POST /api/v1/shipments/{id}/release-document
+     * Issue Digital Release / Pickup Document (Telex Release e-B/L, Air Waybill PDF, or Physical Courier record).
+     */
+    public function issueReleaseDocument(Request $request, string $id): JsonResponse
+    {
+        $shipment = Shipment::where('id', $id)
+            ->orWhere('tracking_number', $id)
+            ->first();
+
+        if (!$shipment) {
+            return $this->sendError('Pengiriman tidak ditemukan', null, 404);
+        }
+
+        $user = $request->user();
+        if ($user && $user->role === 'customer' && (int) $shipment->customer_id !== (int) $user->id) {
+            return $this->sendError('Hanya Operator, Admin, atau Pengirim pemilik barang yang dapat menerbitkan Surat Rilis.', null, 403);
+        }
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'release_document_type' => ['required', 'in:TELEX_RELEASE,AIR_WAYBILL,PHYSICAL_COURIER'],
+            'release_courier_tracking' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validasi dokumen rilis gagal', $validator->errors(), 422);
+        }
+
+        $data = $validator->validated();
+        $prefix = $data['release_document_type'] === 'AIR_WAYBILL' ? 'AWB' : 'EBL';
+        $docNum = $shipment->release_document_number ?: ($prefix . '-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5)));
+
+        $shipment->update([
+            'release_document_number' => $docNum,
+            'release_document_type' => $data['release_document_type'],
+            'release_courier_tracking' => $data['release_courier_tracking'] ?? null,
+            'release_issued_at' => now(),
+        ]);
+
+        AuditLog::create([
+            'user_id' => $user?->id,
+            'action' => 'ISSUE_RELEASE_DOCUMENT',
+            'model_type' => Shipment::class,
+            'model_id' => $shipment->id,
+            'old_values' => null,
+            'new_values' => [
+                'release_document_number' => $docNum,
+                'release_document_type' => $data['release_document_type'],
+                'release_courier_tracking' => $data['release_courier_tracking'] ?? null,
+            ],
+            'ip_address' => $request->ip() ?? '127.0.0.1',
+        ]);
+
+        if ($shipment->buyer_id) {
+            $this->notificationService->notify(
+                $shipment->buyer_id,
+                $shipment->id,
+                'RELEASE_DOCUMENT',
+                "Surat Pengambilan Barang Terbit ({$docNum})",
+                "Surat rilis digital untuk pengiriman {$shipment->tracking_number} sudah siap dilihat dan dicetak."
+            );
+        }
+
+        return $this->sendResponse(
+            $shipment->fresh(['carrier', 'customer', 'buyer', 'originLocation', 'destinationLocation', 'currentLocation', 'items', 'escrow']),
+            "Surat Rilis & Pengambilan Barang ({$docNum}) berhasil diterbitkan."
         );
     }
 

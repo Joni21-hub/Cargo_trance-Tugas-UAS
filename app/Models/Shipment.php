@@ -19,6 +19,17 @@ class Shipment extends Model
         'destination_location_id',
         'current_location_id',
         'status',
+        'transport_mode',
+        'pickup_address',
+        'pickup_latitude',
+        'pickup_longitude',
+        'seal_number',
+        'verification_checklist',
+        'release_document_number',
+        'release_document_type',
+        'release_courier_tracking',
+        'release_issued_at',
+        'simulated_days_elapsed',
         'cargo_description',
         'weight_kg',
         'volume_cbm',
@@ -34,10 +45,15 @@ class Shipment extends Model
         'expected_departure' => 'datetime',
         'expected_arrival' => 'datetime',
         'calculated_eta' => 'datetime',
+        'release_issued_at' => 'datetime',
         'is_delayed' => 'boolean',
         'delay_hours' => 'integer',
+        'simulated_days_elapsed' => 'integer',
         'weight_kg' => 'float',
         'volume_cbm' => 'float',
+        'pickup_latitude' => 'float',
+        'pickup_longitude' => 'float',
+        'verification_checklist' => 'array',
     ];
 
     public function customer()
@@ -87,7 +103,35 @@ class Shipment extends Model
 
     protected $appends = [
         'delay_severity',
+        'travel_progress_pct',
     ];
+
+    public function getTravelProgressPctAttribute(): int
+    {
+        if ($this->status === 'DELIVERED') {
+            return 100;
+        }
+        if (in_array($this->status, ['CREATED', 'BOOKED'], true)) {
+            return 8;
+        }
+        if ($this->status === 'CONFIRMED') {
+            return 18;
+        }
+        if ($this->status === 'PICKED_UP') {
+            return 30;
+        }
+
+        $dep = $this->expected_departure;
+        $arr = $this->expected_arrival;
+        if ($dep && $arr && $arr->gt($dep)) {
+            $totalHours = max(1, $dep->diffInHours($arr));
+            $elapsedHours = max(0, $dep->diffInHours(now(), false));
+            $pct = (int) round(($elapsedHours / $totalHours) * 100);
+            return max(25, min(95, $pct));
+        }
+
+        return 50;
+    }
 
     public function getDelaySeverityAttribute(): string
     {

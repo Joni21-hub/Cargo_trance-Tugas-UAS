@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\AuditLog;
 use App\Models\Carrier;
+use App\Models\ExportProduct;
 use App\Models\Location;
+use App\Models\PickupRequest;
 use App\Models\Shipment;
 use App\Models\ShipmentException;
+use App\Models\SupportTicket;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -50,8 +53,12 @@ class AdminController extends BaseApiController
                 'open_exceptions' => $openExceptions,
                 'on_time_rate' => $onTimeRate,
                 'total_users' => User::count(),
+                'verified_users' => User::where('is_verified', true)->count(),
                 'total_carriers' => Carrier::count(),
                 'total_locations' => Location::count(),
+                'total_products' => ExportProduct::count(),
+                'pending_pickups' => PickupRequest::whereIn('status', ['PENDING_INSPECTION', 'OPERATOR_DISPATCHED'])->count(),
+                'open_tickets' => SupportTicket::whereIn('status', ['OPEN', 'IN_PROGRESS'])->count(),
             ],
             'by_status' => $byStatus,
             'by_carrier' => $byCarrier,
@@ -64,12 +71,43 @@ class AdminController extends BaseApiController
      */
     public function users(): JsonResponse
     {
-        $users = User::with('branchLocation:id,code,name')
-            ->select('id', 'name', 'email', 'role', 'location_id', 'wallet_balance_usd', 'created_at')
+        $users = User::with('branchLocation:id,code,name,island,type')
+            ->select('id', 'name', 'email', 'phone', 'company_name', 'address', 'city', 'country', 'identity_number', 'bio', 'is_verified', 'verified_at', 'role', 'location_id', 'wallet_balance_usd', 'created_at')
             ->orderBy('id')
             ->get();
 
         return $this->sendResponse($users, 'Users retrieved successfully');
+    }
+
+    /**
+     * PATCH /api/v1/admin/users/{id}/verify
+     * Toggle Admin identity verification badge on a user account.
+     */
+    public function toggleVerifyUser(Request $request, int $id): JsonResponse
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return $this->sendError('Pengguna tidak ditemukan', null, 404);
+        }
+
+        $user->is_verified = !$user->is_verified;
+        $user->verified_at = $user->is_verified ? now() : null;
+        $user->save();
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => $user->is_verified ? 'ADMIN_VERIFY_USER' : 'ADMIN_UNVERIFY_USER',
+            'model_type' => User::class,
+            'model_id' => $user->id,
+            'old_values' => ['is_verified' => !$user->is_verified],
+            'new_values' => ['is_verified' => $user->is_verified],
+            'ip_address' => $request->ip() ?? '127.0.0.1',
+        ]);
+
+        return $this->sendResponse(
+            $user->load('branchLocation:id,code,name,island,type'),
+            $user->is_verified ? 'Identitas pengguna resmi ditandai Terverifikasi' : 'Status verifikasi pengguna dicabut'
+        );
     }
 
     /**
@@ -84,6 +122,13 @@ class AdminController extends BaseApiController
             'password' => ['required', 'string', 'min:6'],
             'role' => ['required', 'in:admin,operator,customer,surveyor'],
             'location_id' => ['nullable', 'exists:locations,id'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'company_name' => ['nullable', 'string', 'max:160'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'country' => ['nullable', 'string', 'max:100'],
+            'identity_number' => ['nullable', 'string', 'max:80'],
+            'is_verified' => ['nullable', 'boolean'],
             'wallet_balance_usd' => ['nullable', 'numeric', 'min:0', 'max:10000000'],
         ]);
 
@@ -92,12 +137,21 @@ class AdminController extends BaseApiController
         }
 
         $data = $validator->validated();
+        $isVerified = array_key_exists('is_verified', $data) ? (bool) $data['is_verified'] : ($data['role'] !== 'customer');
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
             'location_id' => $data['location_id'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'company_name' => $data['company_name'] ?? null,
+            'address' => $data['address'] ?? null,
+            'city' => $data['city'] ?? null,
+            'country' => $data['country'] ?? 'Indonesia',
+            'identity_number' => $data['identity_number'] ?? null,
+            'is_verified' => $isVerified,
+            'verified_at' => $isVerified ? now() : null,
             'wallet_balance_usd' => $data['wallet_balance_usd'] ?? 0,
         ]);
 
@@ -138,6 +192,13 @@ class AdminController extends BaseApiController
             'email' => ['sometimes', 'required', 'email', 'max:150', 'unique:users,email,' . $user->id],
             'role' => ['sometimes', 'required', 'in:admin,operator,customer,surveyor'],
             'location_id' => ['nullable', 'exists:locations,id'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'company_name' => ['nullable', 'string', 'max:160'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'country' => ['nullable', 'string', 'max:100'],
+            'identity_number' => ['nullable', 'string', 'max:80'],
+            'is_verified' => ['nullable', 'boolean'],
             'password' => ['nullable', 'string', 'min:6'],
         ]);
 
@@ -146,19 +207,19 @@ class AdminController extends BaseApiController
         }
 
         $data = $validator->validated();
-        $oldValues = $user->only('name', 'email', 'role', 'location_id');
+        $oldValues = $user->only('name', 'email', 'role', 'location_id', 'phone', 'company_name', 'is_verified');
 
-        if (array_key_exists('name', $data)) {
-            $user->name = $data['name'];
-        }
-        if (array_key_exists('email', $data)) {
-            $user->email = $data['email'];
-        }
-        if (array_key_exists('role', $data)) {
-            $user->role = $data['role'];
+        foreach (['name', 'email', 'role', 'phone', 'company_name', 'address', 'city', 'country', 'identity_number'] as $f) {
+            if (array_key_exists($f, $data)) {
+                $user->{$f} = $data[$f];
+            }
         }
         if (array_key_exists('location_id', $data)) {
             $user->location_id = $data['location_id'] ?: null;
+        }
+        if (array_key_exists('is_verified', $data)) {
+            $user->is_verified = (bool) $data['is_verified'];
+            $user->verified_at = $user->is_verified ? ($user->verified_at ?? now()) : null;
         }
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
@@ -339,6 +400,7 @@ class AdminController extends BaseApiController
             'name' => ['required', 'string', 'max:150'],
             'type' => ['required', 'in:PORT,WAREHOUSE,AIRPORT,HUB'],
             'country' => ['required', 'string', 'max:100'],
+            'island' => ['nullable', 'string', 'max:60'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
         ]);
@@ -380,6 +442,7 @@ class AdminController extends BaseApiController
             'name' => ['sometimes', 'required', 'string', 'max:150'],
             'type' => ['sometimes', 'required', 'in:PORT,WAREHOUSE,AIRPORT,HUB'],
             'country' => ['sometimes', 'required', 'string', 'max:100'],
+            'island' => ['nullable', 'string', 'max:60'],
             'latitude' => ['sometimes', 'required', 'numeric', 'between:-90,90'],
             'longitude' => ['sometimes', 'required', 'numeric', 'between:-180,180'],
         ]);

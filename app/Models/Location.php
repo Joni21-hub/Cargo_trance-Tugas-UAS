@@ -14,6 +14,7 @@ class Location extends Model
         'code',
         'type',
         'country',
+        'island',
         'latitude',
         'longitude',
     ];

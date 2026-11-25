@@ -20,6 +20,15 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'company_name',
+        'address',
+        'city',
+        'country',
+        'identity_number',
+        'bio',
+        'is_verified',
+        'verified_at',
         'password',
         'role',
         'location_id',
@@ -45,6 +54,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'verified_at' => 'datetime',
+            'is_verified' => 'boolean',
             'password' => 'hashed',
             'wallet_balance_usd' => 'float',
         ];
@@ -88,5 +99,20 @@ class User extends Authenticatable
     public function walletMutations()
     {
         return $this->hasMany(WalletMutation::class, 'user_id')->latest();
+    }
+
+    public function exportProducts()
+    {
+        return $this->hasMany(ExportProduct::class, 'shipper_id');
+    }
+
+    public function pickupRequests()
+    {
+        return $this->hasMany(PickupRequest::class, 'shipper_id')->latest();
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'user_id')->latest();
     }
 }
