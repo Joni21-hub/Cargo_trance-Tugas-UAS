@@ -286,12 +286,14 @@ Seluruh endpoint di bawah ini wajib login dengan role **`admin`** (`401` jika be
 | `POST /api/v1/admin/users` | Membuat akun baru (eksklusif Admin) | `name`, `email`, `password`, `role`, `location_id` (opsional) |
 | `PUT/PATCH /api/v1/admin/users/{id}` | Mengedit profil, role, cabang & reset sandi | `name`, `email`, `role`, `location_id`, `password` |
 | `PATCH /api/v1/admin/users/{id}/role` | Mengubah role pengguna | `role` (`admin\|operator\|customer\|surveyor`) |
+| `PATCH /api/v1/admin/users/{id}/verify` | Menandai / mencabut lencana Terverifikasi Admin | — |
 | `GET /api/v1/admin/carriers` | Daftar seluruh maskapai + jumlah shipment | — |
 | `POST /api/v1/admin/carriers` | Menambah maskapai baru | `code`, `name`, `transport_mode`, `contact_email`, `phone` |
 | `PUT/PATCH /api/v1/admin/carriers/{id}` | Mengedit data maskapai | `code`, `name`, `transport_mode`, `contact_email`, `phone` |
 | `PATCH /api/v1/admin/carriers/{id}/toggle` | Mengaktifkan / menonaktifkan maskapai | — |
-| `POST /api/v1/admin/locations` | Menambah pelabuhan/hub baru ke bola bumi | `code`, `name`, `type`, `country`, `latitude`, `longitude` |
-| `PUT/PATCH /api/v1/admin/locations/{id}` | Mengedit data & koordinat pelabuhan | `code`, `name`, `type`, `country`, `latitude`, `longitude` |
+| `POST /api/v1/admin/locations` | Menambah pelabuhan/bandara baru ke jaringan | `code`, `name`, `type`, `island`, `country`, `latitude`, `longitude` |
+| `PUT/PATCH /api/v1/admin/locations/{id}` | Mengedit data & koordinat pelabuhan/bandara | `code`, `name`, `type`, `island`, `country`, `latitude`, `longitude` |
+| `POST /api/v1/admin/support-tickets/{id}/reply` | Membalas tiket **Bantuan Admin** & memperbarui status | `admin_reply`, `status` (`OPEN\|IN_PROGRESS\|RESOLVED`) |
 
 ---
 
@@ -307,4 +309,29 @@ Seluruh endpoint di bawah ini wajib login dengan role **`admin`** (`401` jika be
 | `POST /api/v1/wallet/withdraw` | Penarikan simulasi Shipper ke rekening bank | `amount_usd`, `bank_destination` |
 | `POST /api/v1/shipments/{id}/escrow/deposit` | Buyer setor dana ke Escrow (`HELD_IN_ESCROW`) | `auth` (Buyer pemilik) |
 | `POST /api/v1/shipments/{id}/escrow/dispute` | Buyer ajukan sengketa Escrow | `reason` |
-| `POST /api/v1/demo/time-travel` | Majukan waktu simulasi untuk tes delay | `auth` + `role:admin,operator` (`shipment_id`, `hours`) |
+| `POST /api/v1/demo/time-travel` | Majukan waktu simulasi (`Besok +1 Hari`) untuk animasi rute & tes delay | `auth` + `role:admin,operator` (`shipment_id`, `hours`) |
+
+---
+
+## 9. Profil Identitas, Direktori Kopi Nusantara, Panggilan Jemput, Chat, Bantuan Admin & Surat Rilis
+
+| Method & URL | Kegunaan | Akses / Request Body |
+| :--- | :--- | :--- |
+| `GET /api/v1/profile` | Profil identitas lengkap user yang sedang login | `auth` |
+| `PUT/PATCH /api/v1/profile` | Perbarui nama, perusahaan, telepon/WA, NIB/NPWP, alamat, kota, negara, bio | `auth` (`name`, `phone`, `company_name`, `address`, `city`, `country`, `identity_number`, `bio`) |
+| `GET /api/v1/users/{id}/public-profile` | Kartu identitas transparan & status lencana Terverifikasi | Publik |
+| `GET /api/v1/operators` | Daftar Operator Cabang 5 pulau Indonesia beserta hub tugasnya | Publik |
+| `GET /api/v1/export-products` | Direktori Kopi Nusantara (non-marketplace, tanpa harga); filter `?island=`, `?bean_type=`, `?shipper_id=`, `?search=` | Publik |
+| `POST /api/v1/export-products` | Tambah komoditas kopi ke Direktori Nusantara | `auth` (`name`, `island`, `region`, `bean_type`, `origin_location_id`, `process_method`, `supply_capacity`, `tasting_notes`, `description`) |
+| `PUT/PATCH /api/v1/export-products/{id}` | Edit komoditas kopi milik Shipper sendiri (atau Admin) | `auth` (Pemilik / Admin) |
+| `DELETE /api/v1/export-products/{id}` | Hapus komoditas kopi milik Shipper sendiri (atau Admin) | `auth` (Pemilik / Admin) |
+| `GET /api/v1/pickup-requests` | Daftar panggilan cek fisik (`?branch_location_id=`, `?status=`) | `auth` (terbatas sesuai role) |
+| `POST /api/v1/pickup-requests` | Shipper klik **Buat Pengiriman** untuk memanggil Operator Cabang (`target_days <= 7` otomatis rekomendasi `AIR`) | `auth` (`branch_location_id`, `destination_location_id`, `buyer_id`, `pickup_city`, `pickup_address`, `target_days`, `preferred_mode`, `agreed_escrow_usd`, `commodity_summary`, `scheduled_note`) |
+| `PATCH /api/v1/pickup-requests/{id}/dispatch` | Operator memberangkatkan armada truk cabang menuju lokasi Shipper | `auth` + `role:admin,operator` |
+| `PATCH /api/v1/pickup-requests/{id}/cancel` | Membatalkan panggilan jemput yang belum dikonversi menjadi manifest | `auth` (Shipper pemilik / Operator / Admin) |
+| `POST /api/v1/shipments/{id}/release-document` | Menerbitkan **Surat Rilis Digital** (`TELEX_RELEASE`, `AIR_WAYBILL`, atau `PHYSICAL_COURIER`) siap cetak/PDF | `auth` (Operator, Admin, atau Shipper pemilik) (`release_document_type`, `release_courier_tracking`) |
+| `GET /api/v1/chats/threads` | Daftar percakapan & kontak aktif (`Buyer ↔ Shipper ↔ Operator`) | `auth` |
+| `GET /api/v1/chats/messages` | Riwayat pesan (`?peer_id=`, `?shipment_id=`, atau `?pickup_request_id=`) sekaligus menandai pesan masuk terbaca | `auth` |
+| `POST /api/v1/chats/messages` | Kirim pesan negosiasi atau koordinasi pengiriman | `auth` (`recipient_id`, `message`, `channel_type`, `shipment_id`, `pickup_request_id`, `export_product_id`) |
+| `GET /api/v1/support-tickets` | Riwayat tiket bantuan (Admin melihat seluruh tiket masuk; user melihat miliknya) | `auth` |
+| `POST /api/v1/support-tickets` | Kirim laporan **Bantuan Admin** dari tamu publik maupun pengguna terautentikasi | Publik / `auth` (`subject`, `message`, `category`, plus `guest_name` & `guest_contact` jika tamu) |
