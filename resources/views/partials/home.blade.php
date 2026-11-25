@@ -1,20 +1,23 @@
 <div id="page-home">
-  <!-- NAVIGASI PUBLIK -->
+  <!-- NAVIGASI PUBLIK TERANG & BERSIH -->
   <header class="pub-nav">
     <div class="pub-nav-inner">
-      <div style="display:flex;align-items:center;gap:14px;">
+      <div class="pub-nav-brand">
         @include('partials.brand-logo')
         <span class="brand-divider"></span>
-        <span class="brand-sub">Visibilitas Pengiriman Maritim Global</span>
+        <span class="brand-sub">Pelacakan Kargo &amp; Rekening Jaminan Ekspor</span>
       </div>
 
       <nav class="pub-nav-links">
-        <a class="pub-nav-link" href="#beranda-lacak">Lacak Kargo</a>
-        <a class="pub-nav-link" href="#beranda-peran">Portal Peran</a>
-        <a class="pub-nav-link" href="#beranda-jaringan">Jaringan Pelabuhan</a>
+        <a class="pub-nav-link" href="#beranda-lacak">Lacak Resi</a>
+        <a class="pub-nav-link" href="#beranda-alur">Cara Kerja</a>
+        <a class="pub-nav-link" href="#beranda-jaringan">Jaringan 5 Pulau</a>
       </nav>
 
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div class="pub-nav-actions">
+        <button type="button" class="btn btn-outline btn-sm" onclick="MeridianApp.openHelpModal()">
+          Bantuan Admin
+        </button>
         <button type="button" id="nav-btn-signin" class="btn btn-primary btn-sm" onclick="MeridianApp.navigate('login', '/login')">
           Masuk
         </button>
@@ -25,126 +28,124 @@
     </div>
   </header>
 
-  <!-- HERO + LACAK PUBLIK + BOLA BUMI 3D TERPADU -->
+  <!-- HERO + LACAK RESI INSTAN + PETA BUMI 3D -->
   <section class="hero-section" id="beranda-lacak">
-    <div>
+    <div class="hero-copy">
       <div class="hero-eyebrow">
-        <span class="hero-eyebrow-dot"></span>
-        <span>SISTEM PEMANTAUAN MARITIM &amp; KONTAINER</span>
+        <span class="pulse-dot"></span>
+        <span>BUKAN MARKETPLACE &middot; PELACAKAN KARGO &amp; REKENING JAMINAN</span>
       </div>
 
-      <h1 class="hero-title">Satu bola bumi untuk memantau setiap rute pelayaran.</h1>
+      <h1 class="hero-title">Kirim kopi Nusantara ke luar negeri dengan aman, terpantau, dan anti-penipuan.</h1>
       <p class="hero-desc">
-        Jelajahi bumi secara bebas, lacak pergerakan kontainer ISO 6346 dari pelabuhan asal hingga tujuan, pantau perhitungan keterlambatan otomatis, dan lihat cuaca laut secara langsung.
+        Pembeli dan pengirim bebas bernegosiasi langsung. Petugas kami memeriksa fisik barang memakai armada truk cabang di 5 pulau Indonesia, mengirim via kapal atau pesawat mitra, serta menahan dana di Rekening Jaminan hingga barang diterima.
       </p>
 
-      <!-- KOLOM LACAK PUBLIK INSTAN -->
-      <div class="hero-track-card glass-surface">
-        <label class="hero-track-label" for="home-track-input">Lacak Nomor Resi atau Kontainer (ISO 6346)</label>
+      <!-- KOLOM LACAK PUBLIK -->
+      <div class="surface-card hero-track-card">
+        <label class="field-label-strong" for="home-track-input">Lacak Nomor Resi atau Nomor Kontainer</label>
         <form class="hero-track-form" onsubmit="MeridianApp.handlePublicTrackSubmit(event)">
-          <div class="hero-track-input-wrap">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <circle cx="9" cy="9" r="6"/>
-              <path d="M13.6 13.6L17.5 17.5" stroke-linecap="round"/>
-            </svg>
-            <input
-              type="text"
-              id="home-track-input"
-              class="hero-track-input"
-              placeholder="Contoh: MRD-20261121-XXXX atau CSQU3054383"
-              autocomplete="off"
-            >
-          </div>
-          <button type="submit" class="btn btn-accent">Lacak</button>
+          <input
+            type="text"
+            id="home-track-input"
+            class="input mono"
+            placeholder="Contoh: MRD-20261123-XXXX atau CSQU3054383"
+            autocomplete="off"
+          >
+          <button type="submit" class="btn btn-primary">Lacak Sekarang</button>
         </form>
-        <div style="margin-top:10px;display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-muted);">
-          <span>Akses publik · Tanpa perlu login</span>
-          <a style="color:var(--accent-sky);cursor:pointer;text-decoration:none;font-weight:600;" onclick="MeridianApp.navigate('login', '/login')">Masuk ke Portal Kerja &rarr;</a>
+        <div class="hero-track-foot">
+          <span>Bisa dicek publik tanpa login &middot; Nyaman dibuka dari HP maupun laptop</span>
+          <a class="text-link" onclick="MeridianApp.navigate('login', '/login')">Masuk ke Portal Kerja &rarr;</a>
         </div>
       </div>
 
-      <!-- STATISTIK JARINGAN REAL-TIME -->
+      <!-- RINGKASAN JARINGAN -->
       <div class="hero-metrics-strip">
-        <div>
-          <div class="hero-metric-val" id="home-stat-ports">08</div>
-          <div class="hero-metric-lbl">Pelabuhan UN/LOCODE</div>
+        <div class="metric-pill-box">
+          <div class="metric-pill-val" id="home-stat-ports">17</div>
+          <div class="metric-pill-lbl">Pelabuhan &amp; Bandara Mitra</div>
         </div>
-        <div>
-          <div class="hero-metric-val" id="home-stat-carriers">06</div>
-          <div class="hero-metric-lbl">Maskapai Pelayaran</div>
+        <div class="metric-pill-box">
+          <div class="metric-pill-val" id="home-stat-carriers">11</div>
+          <div class="metric-pill-lbl">Mitra Kapal, Pesawat &amp; Truk</div>
         </div>
-        <div>
-          <div class="hero-metric-val" id="home-stat-shipments">0</div>
-          <div class="hero-metric-lbl">Pengiriman Aktif</div>
+        <div class="metric-pill-box">
+          <div class="metric-pill-val" id="home-stat-coffee">9</div>
+          <div class="metric-pill-lbl">Kopi Daerah 5 Pulau</div>
+        </div>
+        <div class="metric-pill-box">
+          <div class="metric-pill-val" id="home-stat-shipments">0</div>
+          <div class="metric-pill-lbl">Pengiriman Aktif</div>
         </div>
       </div>
     </div>
 
-    <!-- BOLA BUMI 3D INTERAKTIF DI HERO -->
-    <div class="hero-globe-stage glass-surface">
-      <div id="hero-globe-map"></div>
+    <!-- KARTU PETA 3D INTERAKTIF RINGAN DI BERANDA -->
+    <div class="surface-card hero-globe-stage">
+      <div id="hero-globe-map" class="hero-globe-canvas"></div>
       <div class="hero-globe-caption">
-        <span>BOLA BUMI SATELIT INTERAKTIF</span>
-        <span>GESER &amp; PERBESAR BEBAS</span>
+        <span>PETA JARINGAN 5 PULAU INDONESIA &amp; DUNIA</span>
+        <span>BISA DIGESER &amp; DIPERBESAR</span>
       </div>
     </div>
   </section>
 
-  <!-- 4 DASHBOARD PERAN YANG TERPISAH NYATA -->
-  <section class="home-band" id="beranda-peran">
+  <!-- 4 PERAN ANTI-PENIPUAN -->
+  <section class="home-band" id="beranda-alur">
     <div class="band-header">
-      <div class="band-kicker">Arsitektur Peran Terpisah</div>
-      <h2 class="band-title">Empat ruang kerja berbeda sesuai tanggung jawab nyata.</h2>
+      <div class="band-kicker">ALUR KERJA NYATA &amp; ANTI-PENIPUAN</div>
+      <h2 class="band-title">Empat ruang kerja layar penuh yang bersih, jelas, dan saling terhubung.</h2>
       <p class="band-desc">
-        Setiap pengguna masuk ke dashboard khusus sesuai otorisasi perannya di server — dengan Bola Bumi 3D di tengah dan bingkai kaca operasional di sisi layar.
+        Setiap pihak punya tugas yang saling menjaga: Pengirim memanggil petugas cabang, Petugas mengecek fisik barang sebelum menginput manifest resmi, Pembeli menitipkan dana di Rekening Jaminan, dan Admin memverifikasi identitas semua pihak.
       </p>
     </div>
 
     <div class="roles-showcase">
-      <div class="role-showcase-card glass-surface">
-        <div class="role-showcase-idx">01 / OPERATOR LOGISTIK</div>
-        <h3>Pusat Operasi &amp; Input Kargo</h3>
-        <p>Mendaftarkan barang, verifikasi nomor kontainer ISO 6346, mencatat checkpoint perjalanan kapal, serta menangani laporan gangguan &amp; keterlambatan.</p>
+      <div class="surface-card role-showcase-card">
+        <span class="badge badge-sky">01 &middot; OPERATOR CABANG</span>
+        <h3>Cek Fisik Barang &amp; Pelacakan</h3>
+        <p>Datang ke lokasi pengirim memakai armada truk cabang kami, memeriksa isi kopi, berat sah &amp; segel, menginput manifest resmi, lalu memperbarui jalur truk, kapal, atau pesawat.</p>
       </div>
 
-      <div class="role-showcase-card glass-surface">
-        <div class="role-showcase-idx">02 / SHIPPER (PENGIRIM)</div>
-        <h3>Persetujuan &amp; Pelacakan Ekspor</h3>
-        <p>Meninjau rincian barang yang diinput operator, menyetujui keberangkatan kargo, dan memantau rute kiriman miliknya langsung pada bola bumi 3D.</p>
+      <div class="surface-card role-showcase-card">
+        <span class="badge badge-warn">02 &middot; PENGIRIM (SHIPPER)</span>
+        <h3>Panggil Petugas &amp; Konfirmasi</h3>
+        <p>Memajang profil komoditas kopi Nusantara (tanpa patokan harga), bernegosiasi lewat Chat, menekan tombol <strong>Buat Pengiriman</strong> untuk memanggil Operator, dan menyetujui data resmi.</p>
       </div>
 
-      <div class="role-showcase-card glass-surface">
-        <div class="role-showcase-idx">03 / BUYER (PENERIMA)</div>
-        <h3>Kedatangan &amp; Serah Terima</h3>
-        <p>Memantau pesanan yang sedang berlayar menuju pelabuhan tujuan, mengecek estimasi tiba serta cuaca dermaga, dan mengonfirmasi penerimaan barang.</p>
+      <div class="surface-card role-showcase-card">
+        <span class="badge badge-ok">03 &middot; PEMBELI (BUYER)</span>
+        <h3>Direktori Kopi &amp; Rekening Jaminan</h3>
+        <p>Menemukan eksportir kopi 5 pulau terverifikasi tanpa mencari lewat media sosial, memilih jalur Pesawat (&le; 7 hari) atau Kapal, menyetor dana jaminan aman, dan mencetak surat pengambilan barang.</p>
       </div>
 
-      <div class="role-showcase-card glass-surface">
-        <div class="role-showcase-idx">04 / ADMINISTRATOR</div>
-        <h3>Kendali Sistem &amp; Master Data</h3>
-        <p>Mengelola pengguna dan hak akses RBAC, menambah maskapai pelayaran, mendaftarkan koordinat pelabuhan baru, serta mengawasi jejak audit sistem.</p>
+      <div class="surface-card role-showcase-card">
+        <span class="badge badge-indigo">04 &middot; ADMINISTRATOR</span>
+        <h3>Verifikasi Identitas &amp; Bantuan</h3>
+        <p>Dashboard admin layar penuh untuk memverifikasi identitas akun, menugaskan petugas cabang 5 pulau, mengelola mitra pelabuhan/bandara/maskapai, dan menjawab Kotak Bantuan Masuk.</p>
       </div>
     </div>
   </section>
 
-  <!-- DIREKTORI PELABUHAN UN/LOCODE -->
+  <!-- JARINGAN 5 PULAU INDONESIA + TUJUAN DUNIA -->
   <section class="home-band" id="beranda-jaringan" style="padding-top:0;">
     <div class="band-header">
-      <div class="band-kicker">Registri UN/LOCODE</div>
-      <h2 class="band-title">Terminal Maritim Terhubung</h2>
-      <p class="band-desc">Koordinat pelabuhan aktif yang tersinkronisasi langsung dengan database dan ditampilkan pada bola bumi Meridian.</p>
+      <div class="band-kicker">JARINGAN 5 PULAU INTI INDONESIA &amp; TUJUAN EKSPOR</div>
+      <h2 class="band-title">1 Pelabuhan Kapal &amp; 1 Bandara Kargo Mitra di Setiap Pulau</h2>
+      <p class="band-desc">Sumatra, Jawa, Kalimantan, Sulawesi, dan Papua terhubung langsung dengan tujuan Amerika Serikat, Eropa, dan Asia.</p>
     </div>
 
-    <div class="glass-surface" style="border-radius:var(--radius-md);overflow:hidden;">
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;text-align:left;">
+    <div class="surface-card table-card">
+      <div class="table-wrap">
+        <table class="data-table">
           <thead>
-            <tr style="border-bottom:1px solid rgba(148,163,184,0.16);background:rgba(2,6,17,0.45);">
-              <th style="padding:12px 18px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;">Kode</th>
-              <th style="padding:12px 18px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;">Nama Terminal / Pelabuhan</th>
-              <th style="padding:12px 18px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;">Negara</th>
-              <th style="padding:12px 18px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;">Tipe</th>
-              <th style="padding:12px 18px;font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.06em;">Koordinat</th>
+            <tr>
+              <th>Kode</th>
+              <th>Nama Pelabuhan / Bandara</th>
+              <th>Pulau / Wilayah</th>
+              <th>Jalur</th>
+              <th>Negara</th>
             </tr>
           </thead>
           <tbody id="home-ports-tbody"></tbody>
@@ -155,12 +156,12 @@
 
   <footer class="pub-footer">
     <div class="pub-footer-inner">
-      <div style="display:flex;align-items:center;gap:12px;">
+      <div class="pub-nav-brand">
         @include('partials.brand-logo')
-        <span>&copy; {{ date('Y') }} Meridian Global Freight Visibility</span>
+        <span class="muted-sm">&copy; {{ date('Y') }} Meridian Nusantara — Pelacakan Kargo &amp; Rekening Jaminan</span>
       </div>
-      <div class="mono" style="font-size:11px;color:var(--ink-muted);">
-        REST API v1 · ISO 6346 · MapLibre Globe 3D · OpenStreetMap · Open-Meteo
+      <div class="pub-footer-right">
+        <button type="button" class="btn btn-outline btn-sm" onclick="MeridianApp.openHelpModal()">Butuh Bantuan? Hubungi Admin</button>
       </div>
     </div>
   </footer>

@@ -1,86 +1,81 @@
 <div id="page-workspace" class="hidden">
-  <div id="workspace-shell">
-    <!-- BOLA BUMI 3D TERPADU PENUH DI TENGAH ALAM SEMESTA -->
-    <div id="workspace-globe-map"></div>
-
-    <!-- BAR NAVIGASI KACA MELAYANG DI ATAS -->
-    <header class="ws-topbar glass-surface">
-      <div class="ws-topbar-left">
+  <div id="app-console" class="app-console">
+    <!-- SIDEBAR NAVIGASI KIRI (DESKTOP / LAPTOP LAYAR PENUH) -->
+    <aside class="console-sidebar" id="console-sidebar">
+      <div class="sidebar-top">
         @include('partials.brand-logo')
-        <span class="brand-divider"></span>
-        <span class="ws-role-badge role-public" id="ws-role-badge">PELACAKAN PUBLIK</span>
-        <span class="tag-mono hidden" id="ws-branch-badge"></span>
-      </div>
-
-      <!-- METRIK RINGKAS KHUSUS SESUAI PERAN -->
-      <div class="ws-topbar-metrics" id="ws-topbar-metrics"></div>
-
-      <!-- UTILITAS DOMPET, NOTIFIKASI & AKUN -->
-      <div class="ws-topbar-right">
-        <button type="button" id="ws-btn-wallet" class="btn btn-glass btn-sm mono hidden" onclick="MeridianApp.toggleUtilityDrawer('wallet')">
-          Saldo: $0
-        </button>
-        <button type="button" id="ws-btn-notif" class="btn btn-glass btn-sm hidden" onclick="MeridianApp.toggleUtilityDrawer('notifications')">
-          Notifikasi <span class="notif-dot-badge" id="ws-notif-count">0</span>
-        </button>
-        <span class="ws-user-tag hidden" id="ws-user-name"></span>
-        <button type="button" id="ws-btn-logout" class="btn btn-glass btn-sm hidden" onclick="MeridianApp.handleLogout()">
-          Keluar
-        </button>
-        <button type="button" id="ws-btn-login" class="btn btn-primary btn-sm hidden" onclick="MeridianApp.navigate('login', '/login')">
-          Masuk
-        </button>
-      </div>
-    </header>
-
-    <!-- BINGKAI KACA KIRI -->
-    <aside class="ws-panel ws-panel-left glass-surface" id="ws-panel-left">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title" id="left-panel-title">Ruang Kerja</div>
-          <div class="panel-sub" id="left-panel-sub">Memuat data...</div>
+        <div class="sidebar-role-wrap">
+          <span class="role-pill" id="ws-role-badge">PELACAKAN PUBLIK</span>
+          <span class="branch-pill hidden" id="ws-branch-badge"></span>
         </div>
-        <div id="left-panel-head-action"></div>
       </div>
-      <div class="panel-body glass-scroll" id="left-panel-body"></div>
+
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn btn-outline btn-sm" style="width:100%;justify-content:center;" onclick="MeridianApp.openMapModal()">
+          Buka Peta Rute 3D
+        </button>
+        <button type="button" class="btn btn-soft-primary btn-sm" style="width:100%;justify-content:center;" onclick="MeridianApp.openHelpModal()">
+          Bantuan Admin
+        </button>
+      </div>
     </aside>
 
-    <!-- BINGKAI KACA KANAN -->
-    <aside class="ws-panel ws-panel-right glass-surface" id="ws-panel-right">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title" id="right-panel-title">Telemetri &amp; Detail</div>
-          <div class="panel-sub" id="right-panel-sub">Pilih kargo atau titik di bola bumi</div>
+    <!-- KOLOM KANAN UTAMA (100% LEBAR KERJA FOKUS — TANPA BOLA BUMI MENIMPA FORM) -->
+    <div class="console-body">
+      <header class="console-header">
+        <div class="console-header-left">
+          <span class="mobile-brand-only">@include('partials.brand-logo')</span>
+          <div class="header-titles">
+            <h1 class="header-page-title" id="header-page-title">Ruang Kerja</h1>
+            <p class="header-page-sub" id="header-page-sub">Memuat data sistem...</p>
+          </div>
         </div>
-        <div id="right-panel-head-action"></div>
-      </div>
-      <div class="panel-body glass-scroll" id="right-panel-body"></div>
-    </aside>
 
-    <!-- DRAWER NOTIFIKASI & DOMPET VIRTUAL ESCROW -->
-    <section class="ws-utility-drawer glass-surface hidden" id="ws-utility-drawer">
-      <div class="panel-head">
-        <div>
-          <div class="panel-title" id="drawer-title">Notifikasi</div>
-          <div class="panel-sub" id="drawer-sub">Pembaruan sistem langsung</div>
+        <div class="console-header-right">
+          <button type="button" id="ws-btn-map-top" class="btn btn-outline btn-sm" onclick="MeridianApp.openMapModal()">
+            Peta 3D
+          </button>
+          <button type="button" id="ws-btn-help-top" class="btn btn-soft-primary btn-sm" onclick="MeridianApp.openHelpModal()">
+            Bantuan Admin
+          </button>
+          <button type="button" id="ws-btn-wallet" class="btn btn-outline btn-sm mono hidden" onclick="MeridianApp.toggleUtilityDrawer('wallet')">
+            Saldo: $0
+          </button>
+          <button type="button" id="ws-btn-notif" class="btn btn-outline btn-sm hidden" onclick="MeridianApp.toggleUtilityDrawer('notifications')">
+            <span class="hide-xs">Notifikasi</span> <span class="notif-dot-badge" id="ws-notif-count">0</span>
+          </button>
+          <button type="button" id="ws-btn-profile-pill" class="user-chip hidden" onclick="MeridianApp.openProfileTab()">
+            <span class="user-avatar" id="ws-user-avatar">U</span>
+            <span class="user-chip-name" id="ws-user-name">Pengguna</span>
+          </button>
+          <button type="button" id="ws-btn-logout" class="btn btn-outline btn-sm hidden" onclick="MeridianApp.handleLogout()">
+            Keluar
+          </button>
+          <button type="button" id="ws-btn-login" class="btn btn-primary btn-sm hidden" onclick="MeridianApp.navigate('login', '/login')">
+            Masuk
+          </button>
         </div>
-        <button type="button" class="btn btn-glass btn-sm" onclick="MeridianApp.closeUtilityDrawer()">Tutup</button>
-      </div>
-      <div class="panel-body glass-scroll" id="drawer-body"></div>
-    </section>
+      </header>
 
-    <!-- DOCK KONTROL BOLA BUMI MELAYANG DI TENGAH BAWAH (DENGAN ATRIBUSI RESMI) -->
-    <div class="ws-earth-dock glass-surface">
-      <button type="button" id="btn-layer-sat" class="dock-btn active" onclick="MeridianGlobe.setLayerMode('satellite')">Satelit Bumi</button>
-      <button type="button" id="btn-layer-osm" class="dock-btn" onclick="MeridianGlobe.setLayerMode('osm')">Peta OSM</button>
-      <span class="dock-sep"></span>
-      <button type="button" class="dock-btn mono" onclick="MeridianGlobe.zoomIn()" title="Perbesar">+</button>
-      <button type="button" class="dock-btn mono" onclick="MeridianGlobe.zoomOut()" title="Perkecil">&minus;</button>
-      <button type="button" class="dock-btn" onclick="MeridianApp.resetEarthView()">Reset Bumi</button>
-      <span class="dock-sep"></span>
-      <button type="button" id="btn-toggle-panels" class="dock-btn" onclick="MeridianApp.toggleGlassPanels()">Sembunyikan Panel</button>
-      <span class="dock-sep"></span>
-      <span class="dock-attribution" title="© OpenStreetMap contributors · Esri, Maxar">&copy; OSM &middot; Esri</span>
+      <!-- KONTEN UTAMA FULL-SCREEN (DINAMIS PER PERAN & TAB) -->
+      <main class="console-main" id="console-main"></main>
     </div>
+
+    <!-- DRAWER UTILITAS KANAN (NOTIFIKASI & DOMPET REKENING JAMINAN) -->
+    <aside class="utility-drawer hidden" id="ws-utility-drawer">
+      <div class="drawer-head">
+        <div>
+          <div class="modal-title" id="drawer-title">Notifikasi</div>
+          <div class="modal-sub" id="drawer-sub">Pembaruan langsung sistem</div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="MeridianApp.closeUtilityDrawer()">Tutup</button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+    </aside>
+
+    <!-- NAVIGASI BAWAH KHUSUS LAYAR HP / MOBILE (< 960px) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav"></nav>
   </div>
 </div>
